@@ -47,6 +47,16 @@ ${TAR?} xf ${SRCDIR}/../dist/${NAME}.tar
 echo "REPRIMAND: Configuring..."
 cd ${NAME}/library
 
+# need at least GSL 2.0
+inc_dirs=
+for dir in ${GSL_INC_DIRS} ; do
+  inc_dirs="$inc_dirs -I$dir"
+done
+if ! ${CC} -E $inc_dirs ${SRCDIR}/../dist/gsl_ver.c &>/dev/null ; then
+    echo >&2 "REPRIMAND: At least GSL version 2 is required, but could not find it anywhere in $GSL_INC_DIRS"
+    exit 1
+fi
+
 echo "REPRIMAND: Building..."
 ${MAKE} -f ${SRCDIR}/../dist/Makefile DESTDIR=${REPRIMAND_DIR}
 

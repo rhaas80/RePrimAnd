@@ -17,7 +17,10 @@ install: all
 libRePrimAnd.a: $(OBJECTS)
 	$(AR) $(ARFLAGS) $@ $^
 
+RePrimAnd.tar:
+	git archive --output=$@ HEAD
+
 clean:
 	$(RM) $(OBJECTS) libRePrimAnd.a
 
-.PHONY: all install clean
+.PHONY: all install clean RePrimAnd.tar

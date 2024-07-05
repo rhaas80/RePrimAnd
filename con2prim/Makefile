@@ -4,7 +4,7 @@ CXX=g++
 
 CXXFLAGS = -std=c++11 -Wall -Wextra -fopenmp
 CPPFLAGS = -I$(REPRIMAND_HOME)/include
-LIBS = -lRePrimAnd -lgsl
+LIBS = -lRePrimAnd -lgsl -lgslcblas
 
 # multi-arch stuff
 MACHINE := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || gcc -print-multiarch 2>/dev/null || gcc -dumpmachine 2>/dev/null)

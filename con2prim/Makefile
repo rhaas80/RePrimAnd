@@ -12,7 +12,7 @@ MACHINE := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || gcc -pr
 LDFLAGS = -fopenmp
 # add both lib and lib64 directories, one never knows what the OS / meson used
 LDFLAGS += -L$(REPRIMAND_HOME)/lib/$(MACHINE) -Wl,--rpath,$(REPRIMAND_HOME)/lib/$(MACHINE)
-LDFLAGS += -L$(REPRIMAND_HOME)/lib6o4/$(MACHINE) -Wl,--rpath,$(REPRIMAND_HOME)/lib64/$(MACHINE)
+LDFLAGS += -L$(REPRIMAND_HOME)/lib64/$(MACHINE) -Wl,--rpath,$(REPRIMAND_HOME)/lib64/$(MACHINE)
 # GSL may not set all required paths
 LDFLAGS += -L$(GSL_ROOT_DIR)/lib -Wl,--rpath,$(GSL_ROOT_DIR)/lib
 

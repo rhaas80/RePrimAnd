@@ -67,7 +67,6 @@ int main(int argc, char **argv)
   gammas[3] = 1.325;
   const real_t rmdp0 = 1/pow(K0, gammas[0]-1);
   auto eos_c = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho);
-  auto eos_c2 = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho/2);
 
   // thermal bit
   const real_t gamma_th = 1.8; // used by Kastaun et al. no other reason

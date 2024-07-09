@@ -1,3 +1,4 @@
+# update this to match the location where RePrimAnd is installed
 REPRIMAND_HOME := $(PWD)/../../reprimand-build
 
 CXX=g++

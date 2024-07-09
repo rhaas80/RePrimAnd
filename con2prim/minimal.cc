@@ -48,25 +48,39 @@ int main(int argc, char **argv)
   //
   // we have
   //
-  // K = rho_p/rho_P**Gamma = 1/(rho_P**(Gamma-1))
+  // K = rho_p/rho_P**Gamma = rho_P**(1-Gamma)
   //
   // or alternatively
   //
-  // rho_P = 1/K**(1/(Gamma-1))
+  // rho_P = K**(1/(1-Gamma))
   const int nsegs = 4;
-  const double K0 = 0.08950758861673326;
+  const double K0 = 0.08949306339299425;
   std::vector<real_t> rho_bounds(nsegs);
   rho_bounds[0] = 0.; // always zero for first segment
-  rho_bounds[1] = 0.00015247493312376816;  // determined by intersection point with crust EOS
-  rho_bounds[2] = 0.000811456143270882; // fixed for all EOS
-  rho_bounds[3] = 0.00161906786291838;  // fixed for all EOS
+  rho_bounds[1] = 1.5246e-04; // 0.00015247493312376816;  // determined by intersection point with crust EOS
+  rho_bounds[2] = 8.1147e-04; // 0.000811456143270882; // fixed for all EOS
+  rho_bounds[3] = 1.6191e-03; // 0.00161906786291838;  // fixed for all EOS
   std::vector<real_t> gammas(nsegs);
   gammas[0] = 1.35692;
-  gammas[1] = 3.224;
-  gammas[2] = 3.033;
-  gammas[3] = 1.325;
-  const real_t rmdp0 = 1/pow(K0, gammas[0]-1);
+  gammas[1] = 3.2240;
+  gammas[2] = 3.0330;
+  gammas[3] = 1.3250;
+  const real_t rmdp0 = pow(K0, 1./(1-gammas[0]));
   auto eos_c = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho);
+
+  const EOS_Toolkit::interval<real_t> range_rho = eos_c.range_rho();
+  std::cout << "valid range for rho in cold EOS: [" << range_rho.min() << ","
+            << range_rho.max() << "]\n";
+  real_t log10_rho_min = log10(rho_bounds[1]/10);
+  real_t log10_rho_max = log10(range_rho.max());
+  real_t log10_drho = (log10_rho_max - log10_rho_min)/100;
+  std::cout <<  std::setprecision(18) << log10_rho_min << " " <<  log10_rho_max << " "  <<  log10_drho << "\n";
+  for(real_t log10_rho = log10_rho_min ; log10_rho < log10_rho_max  ; log10_rho += log10_drho) {
+    auto state = eos_c.at_rho(pow(10., log10_rho));
+    std::cout << state.rho() << " " << state.csnd() << " # vals\n";
+  }
+  auto state = eos_c.at_rho(range_rho.max());
+  std::cout << state.rho() << " " << state.csnd() << " # vals\n";
 
   // thermal bit
   const real_t gamma_th = 1.8; // used by Kastaun et al. no other reason
@@ -99,7 +113,7 @@ int main(int argc, char **argv)
   // conserved vairables to recover
   std::vector<real_t> dens, tau, scon;
   std::ifstream datafile(datafilename);
-#if 1
+#if 0
   // one set of data per line:
   // D tau S
   double densval, tauval, sconval;
@@ -109,7 +123,7 @@ int main(int argc, char **argv)
     scon.push_back(sconval);
   }
 #endif
-#if 0 // compute our own conserved values
+#if 1 // compute our own conserved values
   double rhoval, vval;
   while(datafile >> rhoval >> vval) {
     real_t epsval = eos_c.at_rho(rhoval).eps();
@@ -130,6 +144,8 @@ int main(int argc, char **argv)
   }
 #endif
   datafile.close();
+
+  std::cout << "Read " << dens.size() << " elements\n";
 
   // output
   std::vector<real_t> rho(dens.size());

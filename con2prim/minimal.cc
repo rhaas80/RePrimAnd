@@ -25,7 +25,18 @@ int main(int argc, char **argv)
   const real_t max_eps = 11.;
   const real_t max_rho = 1e6; //fixmy
   
-  // Sly
+  // M1 from Read et al. (based on Mueller and Serot) from Kastaun et al. paper
+  // on RePrimand, using just a single crust piece.
+  // Refer to Fig2 and the text referring to it in Read et al. for how to
+  // compute these, but *note* incorrect value for SLy crust EOS given there,
+  // KCrust is 3.594473308408096 in cgs units for the Gamma = 1.35692 crust.
+  // See MS1.ipynb.
+  //
+  // Specifically I use *old* values of G and Msun:
+  // G =  6.67300*1.e-8  % cm^3 g^-1 s^-2
+  // Msun = 1.98892*1e33 % g
+  // (semi-)independent table of coeffs also available from:
+  // http://www.computational-relativity.org/assets/eos/EOS_MS1.txt
   // RePrimIand defines a "polytropic density scale rho_p" on
   // https://wokast.github.io/RePrimAnd/eos_barotr_available.html
   //
@@ -43,22 +54,23 @@ int main(int argc, char **argv)
   //
   // rho_P = 1/K**(1/(Gamma-1))
   const int nsegs = 4;
-  const double K0 = 0.0894844158847432;
-  std::vector<real_t> rho_bounds{nsegs};
+  const double K0 = 0.08950758861673326;
+  std::vector<real_t> rho_bounds(nsegs);
   rho_bounds[0] = 0.; // always zero for first segment
-  rho_bounds[1] = 0.000236740168564931;
-  rho_bounds[2] = 0.000811456143270882;
-  rho_bounds[3] = 0.00161906786291838;
-  std::vector<real_t> gammas{nsegs};
+  rho_bounds[1] = 0.00015247493312376816;  // determined by intersection point with crust EOS
+  rho_bounds[2] = 0.000811456143270882; // fixed for all EOS
+  rho_bounds[3] = 0.00161906786291838;  // fixed for all EOS
+  std::vector<real_t> gammas(nsegs);
   gammas[0] = 1.35692;
-  gammas[1] = 3.005;
-  gammas[2] = 2.988;
-  gammas[3] = 2.851;
+  gammas[1] = 3.224;
+  gammas[2] = 3.033;
+  gammas[3] = 1.325;
   const real_t rmdp0 = 1/pow(K0, gammas[0]-1);
   auto eos_c = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho);
+  auto eos_c2 = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho/2);
 
   // thermal bit
-  const real_t gamma_th = 5./3.; // 5/3 is good for "thernmal"
+  const real_t gamma_th = 1.8; // used by Kastaun et al. no other reason
   auto eos = make_eos_hybrid(eos_c, gamma_th, max_eps, max_rho);
   
   //Set up atmosphere

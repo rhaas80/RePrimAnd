@@ -133,7 +133,10 @@ int main(int argc, char **argv)
   datafile.close();
 
   // output
+  std::vector<real_t> rho(dens.size());
+  std::vector<real_t> eps(dens.size());
   std::vector<real_t> press(dens.size());
+  std::vector<real_t> vel(dens.size());
 
   sm_metric3 g;
   g.minkowski();
@@ -165,7 +168,10 @@ int main(int argc, char **argv)
 #endif
 
       //write back primitive vars
+      rho[i] = primitives.rho;
+      eps[i] = primitives.eps;
       press[i] = primitives.press;
+      vel[i] = primitives.vel(0);
     }
   }
   double end_time = omp_get_wtime();
@@ -178,7 +184,11 @@ int main(int argc, char **argv)
   results << std::setprecision(18);
   for(size_t i = 0 ; i < dens.size() ; ++i) {
     results << dens[i] << " " << tau[i] << " " << scon[i]
-            << " " << press[i] << "\n";
+            << " " << rho[i]
+            << " " << eps[i]
+            << " " << press[i]
+            << " " << vel[i]
+            << "\n";
   }
   results.close();
   

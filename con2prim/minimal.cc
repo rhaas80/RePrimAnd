@@ -101,26 +101,18 @@ int main(int argc, char **argv)
   std::vector<real_t> dens, tau, scon;
   std::ifstream datafile(datafilename);
 #if 1
-  while(true) {
-    double densval, tauval, sconval;
-    // one set of data per line:
-    // D tau S
-    datafile >> densval >> tauval >> sconval;
-    if(!datafile.good())
-      break;
-
+  // one set of data per line:
+  // D tau S
+  double densval, tauval, sconval;
+  while(datafile >> densval >> tauval >> sconval) {
     dens.push_back(densval);
     tau.push_back(tauval);
     scon.push_back(sconval);
   }
 #endif
 #if 0 // compute our own conserved values
-  while(true) {
-    double rhoval, vval;
-    datafile >> rhoval >> vval;
-    if(!datafile.good())
-      break;
-
+  double rhoval, vval;
+  while(datafile >> rhoval >> vval) {
     real_t epsval = eos_c.at_rho(rhoval).eps();
     real_t pval = eos_c.at_rho(rhoval).press();
 

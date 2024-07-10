@@ -72,16 +72,6 @@ int main(int argc, char **argv)
   const EOS_Toolkit::interval<real_t> range_rho = eos_c.range_rho();
   std::cout << "valid range for rho in cold EOS: [" << range_rho.min() << ","
             << range_rho.max() << "]\n";
-  real_t log10_rho_min = log10(rho_bounds[1]/10);
-  real_t log10_rho_max = log10(range_rho.max());
-  real_t log10_drho = (log10_rho_max - log10_rho_min)/100;
-  std::cout <<  std::setprecision(18) << log10_rho_min << " " <<  log10_rho_max << " "  <<  log10_drho << "\n";
-  for(real_t log10_rho = log10_rho_min ; log10_rho < log10_rho_max  ; log10_rho += log10_drho) {
-    auto state = eos_c.at_rho(pow(10., log10_rho));
-    std::cout << state.rho() << " " << state.csnd() << " # vals\n";
-  }
-  auto state = eos_c.at_rho(range_rho.max());
-  std::cout << state.rho() << " " << state.csnd() << " # vals\n";
 
   // thermal bit
   const real_t gamma_th = 1.8; // used by Kastaun et al. no other reason

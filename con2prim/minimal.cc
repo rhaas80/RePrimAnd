@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
   //Get some EOS
   const real_t max_eps = 11.;
-  const real_t max_rho = 1e6; //fixmy
+  const real_t max_rho = 1e6; // get's reset to point where c_sound == 1 by RePrimAnd internally
   
   // SLy from Read et al. from
   // http://www.computational-relativity.org/assets/eos/EOS_SLy.txt
@@ -55,17 +55,17 @@ int main(int argc, char **argv)
   //
   // rho_P = K**(1/(1-Gamma))
   const int nsegs = 4;
-  const double K0 = 8.9493e-02;
+  const double K0 = 0.0894844158847432;
   std::vector<real_t> rho_bounds(nsegs);
   rho_bounds[0] = 0.; // always zero for first segment
-  rho_bounds[1] = 2.3674e-04; // determined by intersection point with crust EOS
-  rho_bounds[2] = 8.1147e-04; // fixed for all EOS
-  rho_bounds[3] = 1.6191e-03; // fixed for all EOS
+  rho_bounds[1] = 0.000236740168564931;
+  rho_bounds[2] = 0.000811456143270882;
+  rho_bounds[3] = 0.00161906786291838;
   std::vector<real_t> gammas(nsegs);
-  gammas[0] = 1.3569e+00;
-  gammas[1] = 3.0050e+00;
-  gammas[2] = 2.9880e+00;
-  gammas[3] = 2.8510e+00;
+  gammas[0] = 1.35692;
+  gammas[1] = 3.005;
+  gammas[2] = 2.988;
+  gammas[3] = 2.851;
   const real_t rmdp0 = pow(K0, 1./(1-gammas[0]));
   auto eos_c = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho);
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
             << range_rho.max() << "]\n";
 
   // thermal bit
-  const real_t gamma_th = 1.8; // used by Kastaun et al. no other reason
+  const real_t gamma_th = 5./3.; // 5/3 is good for "thernmal"
   auto eos = make_eos_hybrid(eos_c, gamma_th, max_eps, max_rho);
   
   //Set up atmosphere

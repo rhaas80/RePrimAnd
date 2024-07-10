@@ -186,8 +186,6 @@ int main(int argc, char **argv)
   double end_time = omp_get_wtime();
   std::cout << "took: " << (end_time - start_time) << " seconds\n\n";
 
-  std::cerr << "ignore any 'invalid next size' errors due to Python(?)\n\n";
-
   // write results to disk
   std::ofstream results("output.txt");
   results << std::setprecision(18);

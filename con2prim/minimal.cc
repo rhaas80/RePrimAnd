@@ -104,17 +104,20 @@ int main(int argc, char **argv)
   // conserved vairables to recover
   std::vector<real_t> dens, tau, scon;
   std::ifstream datafile(datafilename);
-#if 0
+#if 1
   // one set of data per line:
-  // D tau S
+  // D tau S other_stuff_which_we_ignore
   double densval, tauval, sconval;
   while(datafile >> densval >> tauval >> sconval) {
     dens.push_back(densval);
     tau.push_back(tauval);
     scon.push_back(sconval);
+    // goggle up any remainder of the line
+    std::string dummy;
+    getline(datafile, dummy);
   }
 #endif
-#if 1 // compute our own conserved values
+#if 0 // compute our own conserved values
   double rhoval, vval;
   while(datafile >> rhoval >> vval) {
     real_t epsval = eos_c.at_rho(rhoval).eps();

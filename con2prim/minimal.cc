@@ -25,12 +25,13 @@ int main(int argc, char **argv)
   const real_t max_eps = 11.;
   const real_t max_rho = 1e6; //fixmy
   
-  // M1 from Read et al. (based on Mueller and Serot) from Kastaun et al. paper
-  // on RePrimand, using just a single crust piece.
+  // SLy from Read et al. from
+  // http://www.computational-relativity.org/assets/eos/EOS_SLy.txt
+  // 
   // Refer to Fig2 and the text referring to it in Read et al. for how to
   // compute these, but *note* incorrect value for SLy crust EOS given there,
   // KCrust is 3.594473308408096 in cgs units for the Gamma = 1.35692 crust.
-  // See MS1.ipynb.
+  // See SLy.ipynb for other KCrust values...
   //
   // Specifically I use *old* values of G and Msun:
   // G =  6.67300*1.e-8  % cm^3 g^-1 s^-2
@@ -54,17 +55,17 @@ int main(int argc, char **argv)
   //
   // rho_P = K**(1/(1-Gamma))
   const int nsegs = 4;
-  const double K0 = 0.08949306339299425;
+  const double K0 = 8.9493e-02;
   std::vector<real_t> rho_bounds(nsegs);
   rho_bounds[0] = 0.; // always zero for first segment
-  rho_bounds[1] = 1.5246e-04; // 0.00015247493312376816;  // determined by intersection point with crust EOS
-  rho_bounds[2] = 8.1147e-04; // 0.000811456143270882; // fixed for all EOS
-  rho_bounds[3] = 1.6191e-03; // 0.00161906786291838;  // fixed for all EOS
+  rho_bounds[1] = 2.3674e-04; // determined by intersection point with crust EOS
+  rho_bounds[2] = 8.1147e-04; // fixed for all EOS
+  rho_bounds[3] = 1.6191e-03; // fixed for all EOS
   std::vector<real_t> gammas(nsegs);
-  gammas[0] = 1.35692;
-  gammas[1] = 3.2240;
-  gammas[2] = 3.0330;
-  gammas[3] = 1.3250;
+  gammas[0] = 1.3569e+00;
+  gammas[1] = 3.0050e+00;
+  gammas[2] = 2.9880e+00;
+  gammas[3] = 2.8510e+00;
   const real_t rmdp0 = pow(K0, 1./(1-gammas[0]));
   auto eos_c = make_eos_barotr_pwpoly(rmdp0, rho_bounds, gammas, max_rho);
 
